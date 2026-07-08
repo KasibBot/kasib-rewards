@@ -55,10 +55,10 @@ async def tasks(message: Message):
 
     for task in tasks_list:
         await message.answer(
-            f"🔹 {task['title']}\n"
-            f"⭐ المكافأة: {task['points']} نقطة\n"
-            f"🔗 الرابط: {task['url']}",
-            reply_markup=task_keyboard(task["id"], task["url"])
+    f"🔹 {task['title']}\n"
+    f"⭐ المكافأة: {task['points']} نقطة",
+    reply_markup=task_keyboard(task["id"], task["url"])
+        )
         )
 
 
