@@ -126,7 +126,11 @@ async def rules(message: Message):
 async def support(message: Message):
     await message.answer("📞 تواصل مع الدعم قريبًا.")
 
-
+@dp.message(F.text == "/id")
+async def my_id(message: Message):
+    await message.answer(
+        f"🆔 Telegram ID الخاص بك:\n{message.from_user.id}"
+                  )
 async def health(request):
     return web.Response(text="Kasib Bot is running!")
 
