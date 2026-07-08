@@ -131,7 +131,8 @@ async def my_id(message: Message):
     await message.answer(
         f"🆔 Telegram ID الخاص بك:\n{message.from_user.id}"
                   )
-   @dp.callback_query(F.data.startswith("proof_"))
+   
+@dp.callback_query(F.data.startswith("proof_"))
 async def send_proof(callback: CallbackQuery):
     task_id = int(callback.data.split("_")[1])
 
@@ -140,7 +141,9 @@ async def send_proof(callback: CallbackQuery):
         "بعد إرسالها سيتم تحويلها إلى الإدارة للمراجعة."
     )
 
-    await callback.answer() 
+    await callback.answer()
+
+
 async def health(request):
     return web.Response(text="Kasib Bot is running!")
 
