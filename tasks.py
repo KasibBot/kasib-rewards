@@ -125,7 +125,7 @@ async def receive_proof(
         task["points"]
     )
 
-    await bot.send_photo(
+     await bot.send_photo(
     chat_id=GROUP_ID,
     photo=photo_id,
     caption=(
@@ -135,9 +135,11 @@ async def receive_proof(
         f"📋 المهمة: {task['title']}\n"
         f"⭐ النقاط: {task['points']}"
     )
-    await message.answer(
-        "✅ تم استلام صورة الإثبات.\n"
-        "سيتم مراجعتها من قبل الإدارة."
-    )
+)
 
-    await state.clear()
+await message.answer(
+    "✅ تم استلام صورة الإثبات.\n"
+    "سيتم مراجعتها من قبل الإدارة."
+)
+
+await state.clear()
