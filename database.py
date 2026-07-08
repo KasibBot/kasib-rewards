@@ -1,8 +1,10 @@
 import os
 from supabase import create_client
 
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
 
 supabase = create_client(
     SUPABASE_URL,
@@ -18,7 +20,11 @@ def get_user(telegram_id):
         .eq("telegram_id", telegram_id)
         .execute()
     )
-    return response.data
+
+    if response.data:
+        return response.data[0]
+
+    return None
 
 
 def add_user(user_id, username, first_name):
@@ -32,7 +38,8 @@ def add_user(user_id, username, first_name):
     }
 
     supabase.table("users").insert(data).execute()
-    
+
+
 def get_points(telegram_id):
     response = (
         supabase
@@ -46,6 +53,8 @@ def get_points(telegram_id):
         return response.data[0]["points"]
 
     return 0
+
+
 def get_tasks():
     response = (
         supabase
@@ -56,8 +65,10 @@ def get_tasks():
     )
 
     return response.data
+
+
 def complete_task(telegram_id, task_id, points):
-    # التأكد أن المستخدم لم يكمل المهمة سابقًا
+
     check = (
         supabase
         .table("completed_tasks")
@@ -70,13 +81,13 @@ def complete_task(telegram_id, task_id, points):
     if check.data:
         return False
 
-    # تسجيل المهمة كمكتملة
+
     supabase.table("completed_tasks").insert({
         "telegram_id": telegram_id,
         "task_id": task_id
     }).execute()
 
-    # جلب نقاط المستخدم الحالية
+
     user = (
         supabase
         .table("users")
@@ -85,11 +96,15 @@ def complete_task(telegram_id, task_id, points):
         .execute()
     )
 
+    if not user.data:
+        return False
+
     current_points = user.data[0]["points"]
 
-    # تحديث النقاط
+
     supabase.table("users").update({
         "points": current_points + points
     }).eq("telegram_id", telegram_id).execute()
+
 
     return True
