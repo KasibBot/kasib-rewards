@@ -46,3 +46,13 @@ def get_points(telegram_id):
         return response.data[0]["points"]
 
     return 0
+def get_tasks():
+    response = (
+        supabase
+        .table("tasks")
+        .select("*")
+        .eq("active", True)
+        .execute()
+    )
+
+    return response.data
