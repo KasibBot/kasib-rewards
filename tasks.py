@@ -98,7 +98,6 @@ async def receive_proof(
     state: FSMContext,
     bot: Bot
 ):
-):
     data = await state.get_data()
 
     task_id = data["task_id"]
