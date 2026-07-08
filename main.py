@@ -115,6 +115,19 @@ async def run_web_server():
     await site.start()
 
 
+@dp.message(F.text.startswith("✅"))
+async def finish_task(message: Message):
+    user_id = message.from_user.id
+
+    tasks_list = get_tasks()
+
+    if not tasks_list:
+        await message.answer("لا توجد مهام متاحة.")
+        return
+
+    # باقي كود المهمة هنا
+
+
 async def main():
     await run_web_server()
     await dp.start_polling(bot)
@@ -122,9 +135,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-@dp.message(F.text.startswith("✅"))
-async def finish_task(message: Message):
-    user_id = message.from_user.id
 
     tasks_list = get_tasks()
 
