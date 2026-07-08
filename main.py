@@ -53,16 +53,49 @@ async def tasks(message: Message):
         await message.answer("📋 لا توجد مهام متاحة حاليًا.")
         return
 
-    text = "📋 المهام المتاحة:\n\n"
-
     for task in tasks_list:
-        text += (
+        await message.answer(
             f"🔹 {task['title']}\n"
             f"⭐ المكافأة: {task['points']} نقطة\n"
-            f"🔗 الرابط: {task['url']}\n\n"
+            f"🔗 الرابط: {task['url']}",
+            reply_markup=task_keyboard(task["id"])
         )
 
-    await message.answer(text)
+
+@dp.callback_query(F.data.startswith("complete_"))
+async def complete_task_button(callback: CallbackQuery):
+    user_id = callback.from_user.id
+
+    task_id = int(callback.data.split("_")[1])
+
+    tasks_list = get_tasks()
+
+    task = next(
+        (t for t in tasks_list if t["id"] == task_id),
+        None
+    )
+
+    if not task:
+        await callback.answer("المهمة غير موجودة")
+        return
+
+    result = complete_task(
+        user_id,
+        task_id,
+        task["points"]
+    )
+
+    if result:
+        await callback.message.answer(
+            f"🎉 تم إكمال المهمة!\n"
+            f"⭐ حصلت على {task['points']} نقطة."
+        )
+    else:
+        await callback.message.answer(
+            "⚠️ لقد أكملت هذه المهمة من قبل."
+        )
+
+    await callback.answer()
 
 
 @dp.message(F.text == "🎟️ بطاقات السحب")
@@ -93,35 +126,6 @@ async def rules(message: Message):
 @dp.message(F.text == "📞 الدعم")
 async def support(message: Message):
     await message.answer("📞 تواصل مع الدعم قريبًا.")
-
-
-@dp.message(F.text.startswith("✅"))
-async def finish_task(message: Message):
-    user_id = message.from_user.id
-
-    tasks_list = get_tasks()
-
-    if not tasks_list:
-        await message.answer("لا توجد مهام متاحة.")
-        return
-
-    task = tasks_list[0]
-
-    result = complete_task(
-        user_id,
-        task["id"],
-        task["points"]
-    )
-
-    if result:
-        await message.answer(
-            f"🎉 تم إكمال المهمة!\n"
-            f"⭐ حصلت على {task['points']} نقطة."
-        )
-    else:
-        await message.answer(
-            "⚠️ لقد أكملت هذه المهمة من قبل."
-        )
 
 
 async def health(request):
