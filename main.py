@@ -122,3 +122,30 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+@dp.message(F.text.startswith("✅"))
+async def finish_task(message: Message):
+    user_id = message.from_user.id
+
+    tasks_list = get_tasks()
+
+    if not tasks_list:
+        await message.answer("لا توجد مهام متاحة.")
+        return
+
+    task = tasks_list[0]
+
+    result = complete_task(
+        user_id,
+        task["id"],
+        task["points"]
+    )
+
+    if result:
+        await message.answer(
+            f"🎉 تم إكمال المهمة!\n"
+            f"⭐ حصلت على {task['points']} نقطة."
+        )
+    else:
+        await message.answer(
+            "⚠️ لقد أكملت هذه المهمة من قبل."
+        )
