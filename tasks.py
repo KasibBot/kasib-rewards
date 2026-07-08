@@ -1,3 +1,4 @@
+from aiogram import Bot
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
@@ -94,7 +95,9 @@ async def send_proof(
 @router.message(TaskState.waiting_for_proof, F.photo)
 async def receive_proof(
     message: Message,
-    state: FSMContext
+    state: FSMContext,
+    bot: Bot
+):
 ):
     data = await state.get_data()
 
