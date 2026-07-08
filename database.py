@@ -56,3 +56,40 @@ def get_tasks():
     )
 
     return response.data
+def complete_task(telegram_id, task_id, points):
+    # التأكد أن المستخدم لم يكمل المهمة سابقًا
+    check = (
+        supabase
+        .table("completed_tasks")
+        .select("*")
+        .eq("telegram_id", telegram_id)
+        .eq("task_id", task_id)
+        .execute()
+    )
+
+    if check.data:
+        return False
+
+    # تسجيل المهمة كمكتملة
+    supabase.table("completed_tasks").insert({
+        "telegram_id": telegram_id,
+        "task_id": task_id
+    }).execute()
+
+    # جلب نقاط المستخدم الحالية
+    user = (
+        supabase
+        .table("users")
+        .select("points")
+        .eq("telegram_id", telegram_id)
+        .execute()
+    )
+
+    current_points = user.data[0]["points"]
+
+    # تحديث النقاط
+    supabase.table("users").update({
+        "points": current_points + points
+    }).eq("telegram_id", telegram_id).execute()
+
+    return True
