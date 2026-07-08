@@ -126,6 +126,16 @@ async def receive_proof(
         task["points"]
     )
 
+    await bot.send_photo(
+    chat_id=GROUP_ID,
+    photo=photo_id,
+    caption=(
+        "📥 إثبات جديد\n\n"
+        f"👤 المستخدم: {message.from_user.full_name}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n"
+        f"📋 المهمة: {task['title']}\n"
+        f"⭐ النقاط: {task['points']}"
+    )
     await message.answer(
         "✅ تم استلام صورة الإثبات.\n"
         "سيتم مراجعتها من قبل الإدارة."
