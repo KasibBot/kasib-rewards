@@ -4,6 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from keyboards import main_keyboard, task_keyboard
 from database import get_user, add_user, get_points, get_tasks, complete_task
 from config import TOKEN, ADMIN_ID, GROUP_ID
+from tasks import router as tasks_router
 import asyncio
 import os
 from aiohttp import web
@@ -11,6 +12,7 @@ from aiohttp import web
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
+dp.include_router(tasks_router)
 
 @dp.message(CommandStart())
 async def start(message: Message):
