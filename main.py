@@ -146,7 +146,9 @@ async def run_web_server():
 
     await site.start()
 
-
+@dp.message()
+async def debug_chat(message: Message):
+    print(f"CHAT_ID = {message.chat.id}")
 async def main():
     await run_web_server()
     await dp.start_polling(bot)
