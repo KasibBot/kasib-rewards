@@ -58,8 +58,7 @@ async def tasks(message: Message):
             f"🔹 {task['title']}\n"
             f"⭐ المكافأة: {task['points']} نقطة\n"
             f"🔗 الرابط: {task['url']}",
-            reply_markup=task_keyboard(task["id"])
-        )
+            reply_markup=task_keyboard(task["id"], task["url"])
 
 
 @dp.callback_query(F.data.startswith("complete_"))
