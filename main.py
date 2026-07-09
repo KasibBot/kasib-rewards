@@ -246,18 +246,18 @@ async def get_task_points(message: Message, state: FSMContext):
         "points": int(message.text),
         "active": True
     }).execute()
-    
-    @dp.callback_query(lambda c: c.data == "create_contest")
+
+    await message.answer("✅ تم إضافة المهمة بنجاح.")
+    await state.clear()
+
+
+@dp.callback_query(lambda c: c.data == "create_contest")
 async def create_contest_start(callback: CallbackQuery, state: FSMContext):
     if callback.from_user.id != ADMIN_ID:
         return
 
     await callback.message.answer("🏆 أرسل اسم المسابقة:")
     await state.set_state(ContestState.waiting_for_title)
-
-    await message.answer("✅ تم إضافة المهمة بنجاح.")
-    await state.clear()
-
 
 
 @dp.callback_query(lambda c: c.data == "delete_task")
