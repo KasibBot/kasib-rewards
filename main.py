@@ -233,13 +233,17 @@ async def get_contest_title(message: Message, state: FSMContext):
 
     await message.answer("🎁 أرسل الجائزة:")
     await state.set_state(ContestState.waiting_for_prize)
-  @dp.message(ContestState.waiting_for_prize)
+
+
+@dp.message(ContestState.waiting_for_prize)
 async def get_contest_prize(message: Message, state: FSMContext):
     await state.update_data(prize=message.text)
 
     await message.answer("👥 أرسل عدد الفائزين:")
-    await state.set_state(ContestState.waiting_for_winners)  
-    @dp.message(ContestState.waiting_for_winners)
+    await state.set_state(ContestState.waiting_for_winners)
+
+
+@dp.message(ContestState.waiting_for_winners)
 async def get_contest_winners(message: Message, state: FSMContext):
     if not message.text.isdigit():
         await message.answer("❌ أرسل رقمًا صحيحًا.")
@@ -256,7 +260,8 @@ async def get_contest_winners(message: Message, state: FSMContext):
 
     await message.answer("✅ تم إنشاء المسابقة بنجاح.")
     await state.clear()
-    
+
+
 @dp.callback_query(lambda c: c.data == "delete_task")
 async def delete_task_menu(callback: CallbackQuery):
     if callback.from_user.id != ADMIN_ID:
