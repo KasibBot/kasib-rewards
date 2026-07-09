@@ -118,45 +118,6 @@ async def start(message: Message):
         reply_markup=main_keyboard
     )
 
-
-# هنا يبدأ كود الأدمن (خارج start)
-
-admin_keyboard = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="➕ إضافة مهمة",
-                callback_data="add_task"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="📋 عرض المهام",
-                callback_data="show_tasks"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="❌ حذف مهمة",
-                callback_data="delete_task"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="👥 عدد المستخدمين",
-                callback_data="admin_users"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="📊 الإحصائيات",
-                callback_data="admin_stats"
-            )
-        ]
-    ]
-)
-
-
 @dp.message(Command("admin"))
 async def admin_panel(message: Message):
     if message.from_user.id != ADMIN_ID:
