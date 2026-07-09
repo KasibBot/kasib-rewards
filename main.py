@@ -137,8 +137,29 @@ async def leaderboard(message: Message):
 
 @dp.message(F.text == "👥 دعوة صديق")
 async def invite(message: Message):
+
+    referrals = get_referrals(
+        message.from_user.id
+    )
+
+    bot_username = (await bot.get_me()).username
+
+    link = (
+        f"https://t.me/{bot_username}"
+        f"?start={message.from_user.id}"
+    )
+
     await message.answer(
-        "👥 رابط الدعوة الخاص بك سيظهر هنا."
+
+        "👥 دعوة الأصدقاء\n\n"
+
+        f"🔗 رابط دعوتك:\n{link}\n\n"
+
+        f"👤 عدد الدعوات: {referrals}\n\n"
+
+        "🎁 تحصل على 10 نقاط "
+        "عن كل مستخدم جديد يدخل عبر رابطك."
+
     )
 
 
