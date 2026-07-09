@@ -99,12 +99,11 @@ async def receive_proof(
     bot: Bot
 ):
     data = await state.get_data()
-
     task_id = data["task_id"]
 
     tasks_list = get_tasks()
 
-        task = next(
+    task = next(
         (t for t in tasks_list if t["id"] == task_id),
         None
     )
@@ -115,3 +114,31 @@ async def receive_proof(
         )
         await state.clear()
         return
+
+    photo_id = message.photo[-1].file_id
+
+    create_submission(
+        message.from_user.id,
+        task_id,
+        photo_id,
+        task["points"]
+    )
+
+    await bot.send_photo(
+        chat_id=GROUP_ID,
+        photo=photo_id,
+        caption=(
+            "📥 إثبات جديد\n\n"
+            f"👤 المستخدم: {message.from_user.full_name}\n"
+            f"🆔 Telegram ID: {message.from_user.id}\n"
+            f"📋 المهمة: {task['title']}\n"
+            f"⭐ النقاط: {task['points']}"
+        )
+    )
+
+    await message.answer(
+        "✅ تم استلام صورة الإثبات.\n"
+        "سيتم مراجعتها من قبل الإدارة."
+    )
+
+    await state.clear()
