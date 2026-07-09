@@ -56,13 +56,12 @@ async def complete_task_button(callback: CallbackQuery):
     )
 
 
-    tasks_list = get_tasks()
+        tasks_list = get_tasks()
 
     task = next(
         (t for t in tasks_list if t["id"] == task_id),
         None
     )
-
 
     if not task:
         await callback.answer(
