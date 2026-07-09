@@ -56,12 +56,13 @@ async def complete_task_button(callback: CallbackQuery):
     )
 
 
-        tasks_list = get_tasks()
+    tasks_list = get_tasks()
 
     task = next(
         (t for t in tasks_list if t["id"] == task_id),
         None
     )
+
 
     if not task:
         await callback.answer(
@@ -145,7 +146,7 @@ async def receive_proof(
     tasks_list = get_tasks()
 
 
-        task = next(
+    task = next(
         (t for t in tasks_list if t["id"] == task_id),
         None
     )
@@ -204,6 +205,9 @@ async def receive_proof(
 
 
     await state.clear()
+
+
+
 # قبول الإثبات
 @router.callback_query(
     F.data.startswith("approve_")
@@ -290,4 +294,4 @@ async def reject_button(
 
     await callback.answer(
         "تم رفض الطلب"
-)
+    )
