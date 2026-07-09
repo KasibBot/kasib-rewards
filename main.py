@@ -32,14 +32,24 @@ async def start(message: Message):
     username = message.from_user.username
     first_name = message.from_user.first_name
 
+    args = message.text.split()
+
+    referrer_id = None
+    if len(args) > 1:
+        referrer_id = int(args[1])
+
     user = get_user(user_id)
 
     if not user:
         add_user(
             user_id,
             username,
-            first_name
+            first_name,
+            referrer_id
         )
+
+        if referrer_id:
+            add_points(referrer_id, 10)  # مثال: 10 نقاط للإحالة
 
     await message.answer(
         "💰 مرحبًا بك في Kasib\n\n"
