@@ -319,7 +319,67 @@ exchange_keyboard = InlineKeyboardMarkup(
         ]
     ]
 )
+@dp.callback_query(lambda c: c.data == "run_draw")
+async def run_draw(callback: CallbackQuery):
+    if callback.from_user.id != ADMIN_ID:
+        return
 
+    contest = supabase.table("contests") \
+        .select("*") \
+        .eq("status", "active") \
+        .limit(1) \
+        .execute()
+
+    if not contest.data:
+        await callback.message.answer("❌ لا توجد مسابقة نشطة.")
+        return
+
+    c = contest.data[0]
+
+    users = supabase.table("users") \
+        .select("telegram_id, tickets") \
+        .gt("tickets", 0) \
+        .execute()
+
+    if not users.data:
+        await callback.message.answer("❌ لا يوجد مشاركون.")
+        return
+
+    import random
+
+    pool = []
+
+    for user in users.data:
+        for _ in range(user["tickets"]):
+            pool.append(user["telegram_id"])
+
+    winners_count = c["winners_count"]
+
+    if len(pool) < winners_count:
+        winners_count = len(pool)
+
+    winners = random.sample(pool, winners_count)
+
+    text = "🎉 الفائزون:\n\n"
+
+    for i, winner in enumerate(winners, start=1):
+        text += f"{i}- {winner}\n"
+
+        await bot.send_message(
+            winner,
+            "🎉 مبروك! لقد فزت في المسابقة!"
+        )
+
+    await callback.message.answer(text)
+
+    supabase.table("contests").update({
+        "status": "finished"
+    }).eq("id", c["id"]).execute()
+
+    supabase.table("users").update({
+        "tickets": 0
+    }).execute()
+    
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
     points = get_points(message.from_user.id)
