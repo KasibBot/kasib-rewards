@@ -1,6 +1,6 @@
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from keyboards import main_keyboard
 from database import (
     get_user,
@@ -10,7 +10,9 @@ from database import (
     get_referrals,
     add_referral_reward,
     set_referred_by,
-    get_referred_by
+    get_referred_by,
+    get_users_count,
+    add_points
 )
 from config import TOKEN
 from tasks import router as tasks_router
@@ -19,12 +21,28 @@ import asyncio
 import os
 from aiohttp import web
 
+ADMIN_ID = 1924476173
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 dp.include_router(tasks_router)
-
+admin_keyboard = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="👥 عدد المستخدمين",
+                callback_data="admin_users"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="📊 الإحصائيات",
+                callback_data="admin_stats"
+            )
+        ]
+    ]
+)
 
 @dp.message(CommandStart())
 async def start(message: Message):
@@ -36,26 +54,60 @@ async def start(message: Message):
 
     referrer_id = None
     if len(args) > 1:
-        referrer_id = int(args[1])
+        try:
+            referrer_id = int(args[1])
+        except:
+            referrer_id = None
 
     user = get_user(user_id)
 
     if not user:
         add_user(
             user_id,
-            username,
-            first_name,
+            username or "",
+            first_name or "",
             referrer_id
         )
 
-        if referrer_id:
-            add_points(referrer_id, 10)  # مثال: 10 نقاط للإحالة
+        if referrer_id and referrer_id != user_id:
+            add_points(referrer_id, 10)
 
     await message.answer(
         "💰 مرحبًا بك في Kasib\n\n"
         "اكسب النقاط، شارك في المسابقات، واربح الجوائز!\n\n"
         "اختر أحد الخيارات من القائمة 👇",
         reply_markup=main_keyboard
+    )
+
+
+# هنا يبدأ كود الأدمن (خارج start)
+
+admin_keyboard = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="👥 عدد المستخدمين",
+                callback_data="admin_users"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="📊 الإحصائيات",
+                callback_data="admin_stats"
+            )
+        ]
+    ]
+)
+
+
+@dp.message(Command("admin"))
+async def admin_panel(message: Message):
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    await message.answer(
+        "⚙️ لوحة تحكم الأدمن",
+        reply_markup=admin_keyboard
     )
 
 
