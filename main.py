@@ -49,6 +49,18 @@ admin_keyboard = InlineKeyboardMarkup(
                 text="📊 الإحصائيات",
                 callback_data="admin_stats"
             )
+        ],
+        [
+            InlineKeyboardButton(
+                text="➕ إضافة مهمة",
+                callback_data="add_task"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="🗑 حذف مهمة",
+                callback_data="delete_task"
+            )
         ]
     ]
 )
