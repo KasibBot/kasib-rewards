@@ -33,6 +33,11 @@ class AdminTaskState(StatesGroup):
     waiting_for_url = State()
     waiting_for_points = State()
     
+class ContestState(StatesGroup):
+    waiting_for_title = State()
+    waiting_for_prize = State()
+    waiting_for_winners = State()    
+    
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
