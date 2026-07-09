@@ -126,9 +126,14 @@ async def admin_stats(callback):
     if callback.from_user.id != ADMIN_ID:
         return
 
-    await callback.message.answer(
-        "📊 الإحصائيات قيد التجهيز..."
-    )
+    count = get_users_count()
+
+await callback.message.answer(
+    f"📊 الإحصائيات:\n\n"
+    f"👥 عدد المستخدمين: {count}\n"
+    f"🤝 نظام الإحالة: مفعل\n"
+    f"💰 مكافأة الإحالة: 10 نقاط"
+)
 
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
