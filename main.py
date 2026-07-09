@@ -335,30 +335,34 @@ async def exchange_points(message: Message):
     )
 @dp.callback_query(lambda c: c.data == "confirm_exchange")
 async def confirm_exchange(callback: CallbackQuery):
-    user = supabase.table("users") \
-        .select("points, tickets") \
-        .eq("telegram_id", callback.from_user.id) \
-        .execute()
+    try:
+        user = supabase.table("users") \
+            .select("points, tickets") \
+            .eq("telegram_id", callback.from_user.id) \
+            .execute()
 
-    if not user.data:
-        await callback.answer("❌ الحساب غير موجود")
-        return
+        if not user.data:
+            await callback.answer("❌ الحساب غير موجود")
+            return
 
-    points = user.data[0]["points"]
-    tickets = user.data[0]["tickets"]
+        points = user.data[0]["points"]
+        tickets = user.data[0]["tickets"]
 
-    if points < 1000:
-        await callback.answer("❌ نقاطك غير كافية")
-        return
+        if points < 1000:
+            await callback.answer("❌ نقاطك غير كافية")
+            return
 
-    supabase.table("users").update({
-        "points": points - 1000,
-        "tickets": tickets + 1
-    }).eq("telegram_id", callback.from_user.id).execute()
+        supabase.table("users").update({
+            "points": points - 1000,
+            "tickets": tickets + 1
+        }).eq("telegram_id", callback.from_user.id).execute()
 
-    await callback.message.edit_text(
-        "✅ تم الاستبدال بنجاح!\n🎟️ حصلت على بطاقة سحب."
-    )
+        await callback.message.edit_text(
+            "✅ تم الاستبدال بنجاح!\n🎟️ حصلت على بطاقة سحب."
+        )
+
+    except Exception as e:
+        await callback.message.answer(f"❌ خطأ: {e}")
     
 @dp.message(F.text == "🎁 المسابقات")
 async def contests(message: Message):
