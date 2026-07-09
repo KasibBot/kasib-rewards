@@ -170,15 +170,29 @@ async def show_tasks(callback):
     text = "📋 قائمة المهام:\n\n"
 
     for task in tasks.data:
-        text += (
-            f"🆔 ID: {task['id']}\n"
-            f"📌 العنوان: {task['title']}\n"
-            f"🔗 الرابط: {task['url']}\n"
-            f"💰 النقاط: {task['points']}\n"
-            f"✅ نشطة: {task['active']}\n\n"
-        )
+    text += (
+        f"🆔 ID: {task['id']}\n"
+        f"📌 العنوان: {task['title']}\n"
+        f"🔗 الرابط: {task['url']}\n"
+        f"💰 النقاط: {task['points']}\n"
+        f"✅ نشطة: {task['active']}\n\n"
+    )
 
-    await callback.message.answer(text)
+await callback.message.answer(text)
+
+
+@dp.callback_query(lambda c: c.data == "add_task")
+async def add_task_start(callback: CallbackQuery, state: FSMContext):
+    if callback.from_user.id != ADMIN_ID:
+        return
+
+    await callback.message.answer(
+        "📌 أرسل عنوان المهمة:"
+    )
+
+    await state.set_state(AdminTaskState.waiting_for_title)
+
+
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
     points = get_points(message.from_user.id)
