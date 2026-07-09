@@ -230,3 +230,42 @@ def get_leaderboard():
     )
 
     return response.data
+def get_referrals(telegram_id):
+
+    response = (
+        supabase
+        .table("users")
+        .select("referrals")
+        .eq("telegram_id", telegram_id)
+        .execute()
+    )
+
+    if response.data:
+        return response.data[0]["referrals"]
+
+    return 0
+
+
+def add_referral_reward(telegram_id, reward=10):
+
+    user = (
+        supabase
+        .table("users")
+        .select("points, referrals")
+        .eq("telegram_id", telegram_id)
+        .execute()
+    )
+
+    if not user.data:
+        return
+
+    current_points = user.data[0]["points"]
+    current_referrals = user.data[0]["referrals"]
+
+    supabase.table("users").update({
+        "points": current_points + reward,
+        "referrals": current_referrals + 1
+    }).eq(
+        "telegram_id",
+        telegram_id
+    ).execute()
