@@ -310,33 +310,26 @@ async def tickets(message: Message):
     )
 @dp.message(F.text == "🎟️ استبدال النقاط")
 async def exchange_points(message: Message):
-    user = supabase.table("users").select("points").eq("user_id", message.from_user.id).execute()
+    user = supabase.table("users") \
+        .select("points") \
+        .eq("telegram_id", message.from_user.id) \
+        .execute()
 
     if not user.data:
-        await message.answer("❌ لم يتم العثور على بياناتك.")
+        await message.answer("❌ لم يتم العثور على حسابك.")
         return
 
     points = user.data[0]["points"]
 
-    if points < 1000:
+    if points < 100:
         await message.answer(
-            f"❌ تحتاج إلى 1000 نقطة للحصول على بطاقة سحب.\n\n"
-            f"⭐ نقاطك الحالية: {points}\n"
-            f"📈 المتبقي: {1000 - points} نقطة."
+            f"❌ لا تملك نقاط كافية.\nرصيدك: {points} نقطة"
         )
         return
 
-    tickets = points // 1000
-    remaining = points % 1000
-
     await message.answer(
-    f"🎟️ يمكنك استبدال:\n\n"
-    f"⭐ {points} نقطة\n"
-    f"⬇️\n"
-    f"🎫 {tickets} بطاقة سحب\n\n"
-    f"⭐ النقاط التي ستتبقى بعد الاستبدال: {remaining}\n\n"
-    f"هل تريد تأكيد عملية الاستبدال؟",
-    reply_markup=exchange_keyboard
+        "🎟️ هل تريد استبدال 100 نقطة؟",
+        reply_markup=confirm_keyboard
     )
 
 @dp.message(F.text == "🎁 المسابقات")
