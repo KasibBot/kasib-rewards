@@ -401,8 +401,32 @@ async def confirm_exchange(callback: CallbackQuery):
     
 @dp.message(F.text == "🎁 المسابقات")
 async def contests(message: Message):
+    contest = supabase.table("contests") \
+        .select("*") \
+        .eq("status", "active") \
+        .limit(1) \
+        .execute()
+
+    if not contest.data:
+        await message.answer("🎁 لا توجد مسابقات نشطة حاليًا.")
+        return
+
+    user = supabase.table("users") \
+        .select("tickets") \
+        .eq("telegram_id", message.from_user.id) \
+        .execute()
+
+    tickets = 0
+    if user.data:
+        tickets = user.data[0]["tickets"]
+
+    c = contest.data[0]
+
     await message.answer(
-        "🎁 لا توجد مسابقات نشطة حاليًا."
+        f"🏆 {c['title']}\n\n"
+        f"🎁 الجائزة: {c['prize']}\n"
+        f"👥 عدد الفائزين: {c['winners_count']}\n\n"
+        f"🎟️ بطاقاتك: {tickets}"
     )
 
 
