@@ -9,15 +9,18 @@ main_keyboard = ReplyKeyboardMarkup(
             KeyboardButton(text="📋 المهام")
         ],
         [
-            KeyboardButton(text="🎟️ بطاقات السحب"),
-            KeyboardButton(text="🎁 المسابقات")
+            KeyboardButton(text="🎟️ استبدال النقاط"),
+            KeyboardButton(text="🎟️ بطاقات السحب")
         ],
         [
-            KeyboardButton(text="👥 دعوة صديق"),
-            KeyboardButton(text="🏆 المتصدرون")
+            KeyboardButton(text="🎁 المسابقات"),
+            KeyboardButton(text="👥 دعوة صديق")
         ],
         [
-            KeyboardButton(text="📜 القوانين"),
+            KeyboardButton(text="🏆 المتصدرون"),
+            KeyboardButton(text="📜 القوانين")
+        ],
+        [
             KeyboardButton(text="📞 الدعم")
         ]
     ],
