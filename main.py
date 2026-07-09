@@ -46,20 +46,14 @@ admin_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="👥 عدد المستخدمين",
-                callback_data="admin_users"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="📊 الإحصائيات",
-                callback_data="admin_stats"
-            )
-        ],
-        [
-            InlineKeyboardButton(
                 text="➕ إضافة مهمة",
                 callback_data="add_task"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="📋 عرض المهام",
+                callback_data="show_tasks"
             )
         ],
         [
@@ -70,8 +64,20 @@ admin_keyboard = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton(
-                text="🗑 حذف مهمة",
+                text="❌ حذف مهمة",
                 callback_data="delete_task"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="👥 عدد المستخدمين",
+                callback_data="admin_users"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="📊 الإحصائيات",
+                callback_data="admin_stats"
             )
         ]
     ]
