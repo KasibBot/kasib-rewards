@@ -109,7 +109,26 @@ async def admin_panel(message: Message):
         "⚙️ لوحة تحكم الأدمن",
         reply_markup=admin_keyboard
     )
+@dp.callback_query(lambda c: c.data == "admin_users")
+async def admin_users(callback):
+    if callback.from_user.id != ADMIN_ID:
+        return
 
+    count = get_users_count()
+
+    await callback.message.answer(
+        f"👥 عدد المستخدمين: {count}"
+    )
+
+
+@dp.callback_query(lambda c: c.data == "admin_stats")
+async def admin_stats(callback):
+    if callback.from_user.id != ADMIN_ID:
+        return
+
+    await callback.message.answer(
+        "📊 الإحصائيات قيد التجهيز..."
+    )
 
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
