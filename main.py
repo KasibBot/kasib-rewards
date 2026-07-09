@@ -321,14 +321,16 @@ async def exchange_points(message: Message):
 
     points = user.data[0]["points"]
 
-    if points < 100:
+    if points < 1000:
         await message.answer(
-            f"❌ لا تملك نقاط كافية.\nرصيدك: {points} نقطة"
+            f"❌ لا تملك نقاط كافية.\n"
+            f"رصيدك: {points} نقطة\n"
+            f"المطلوب: 1000 نقطة 🎟️"
         )
         return
 
     await message.answer(
-        "🎟️ هل تريد استبدال 100 نقطة؟",
+        "🎟️ هل تريد استبدال 1000 نقطة؟",
         reply_markup=confirm_keyboard
     )
 
