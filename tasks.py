@@ -109,14 +109,14 @@ async def receive_proof(
         None
     )
 
-    if not task:
-    await message.answer(
-        "❌ المهمة غير موجودة."
-    )
-    await state.clear()
-    return
+        if not task:
+        await message.answer(
+            "❌ المهمة غير موجودة."
+        )
+        await state.clear()
+        return
 
-photo_id = message.photo[-1].file_id
+    photo_id = message.photo[-1].file_id
 
     create_submission(
         message.from_user.id,
