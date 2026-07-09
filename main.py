@@ -353,12 +353,12 @@ async def run_draw(callback: CallbackQuery):
         for _ in range(user["tickets"]):
             pool.append(user["telegram_id"])
 
-    winners_count = c["winners_count"]
+        winners_count = c["winners_count"]
 
     if len(pool) < winners_count:
         winners_count = len(pool)
 
-         winners = []
+    winners = []
 
     while len(winners) < winners_count and pool:
         winner = random.choice(pool)
