@@ -18,6 +18,7 @@ from config import TOKEN
 from tasks import router as tasks_router
 from database import supabase
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery
 from states import AdminTaskState
 
 import asyncio
