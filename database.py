@@ -28,9 +28,10 @@ def get_user(telegram_id):
 
 
 def add_user(user_id, username, first_name):
+
     data = {
         "telegram_id": user_id,
-        "username": username,
+        "username": username or "",
         "first_name": first_name,
         "points": 0,
         "tickets": 0,
