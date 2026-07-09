@@ -279,7 +279,20 @@ async def delete_task(callback: CallbackQuery):
     supabase.table("tasks").delete().eq("id", task_id).execute()
 
     await callback.message.edit_text("✅ تم حذف المهمة بنجاح.")
-
+exchange_keyboard = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="✅ تأكيد",
+                callback_data="confirm_exchange"
+            ),
+            InlineKeyboardButton(
+                text="❌ إلغاء",
+                callback_data="cancel_exchange"
+            )
+        ]
+    ]
+)
 
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
@@ -323,6 +336,7 @@ async def exchange_points(message: Message):
         f"🎫 {tickets} بطاقة سحب\n\n"
         f"⭐ النقاط التي ستتبقى بعد الاستبدال: {remaining}\n\n"
         f"⚠️ في الخطوة التالية سنضيف زر (✅ تأكيد) لتنفيذ الاستبدال."
+        reply_markup=exchange_keyboard
     )
 
 @dp.message(F.text == "🎁 المسابقات")
