@@ -305,8 +305,23 @@ async def my_points(message: Message):
 
 @dp.message(F.text == "🎟️ بطاقات السحب")
 async def tickets(message: Message):
+    user = supabase.table("users") \
+        .select("tickets") \
+        .eq("telegram_id", message.from_user.id) \
+        .execute()
+
+    if not user.data:
+        await message.answer("❌ لم يتم العثور على حسابك.")
+        return
+
+    tickets = user.data[0]["tickets"]
+
+    if tickets <= 0:
+        await message.answer("🎟️ لا تملك أي بطاقة سحب حتى الآن.")
+        return
+
     await message.answer(
-        "🎟️ لا تملك أي بطاقة سحب حتى الآن."
+        f"🎟️ لديك {tickets} بطاقة سحب."
     )
 @dp.message(F.text == "🎟️ استبدال النقاط")
 async def exchange_points(message: Message):
