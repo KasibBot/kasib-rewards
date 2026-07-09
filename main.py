@@ -2,7 +2,12 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from keyboards import main_keyboard
-from database import get_user, add_user, get_points
+from database import (
+    get_user,
+    add_user,
+    get_points,
+    get_leaderboard
+)
 from config import TOKEN
 from tasks import router as tasks_router
 
@@ -65,9 +70,34 @@ async def contests(message: Message):
 
 @dp.message(F.text == "🏆 المتصدرون")
 async def leaderboard(message: Message):
-    await message.answer(
-        "🏆 سيتم عرض المتصدرين هنا."
+
+    users = get_leaderboard()
+
+    if not users:
+        await message.answer(
+            "🏆 لا يوجد متصدرون حتى الآن."
+        )
+        return
+
+    medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+
+    text = "🏆 أفضل 5 متصدرين\n\n"
+
+    for i, user in enumerate(users):
+        name = user["first_name"] or "مستخدم"
+        points = user["points"]
+
+        text += (
+            f"{medals[i]} {name} — "
+            f"{points} نقطة\n"
+        )
+
+    text += (
+        "\n⭐ اجمع المزيد من النقاط "
+        "لتصل إلى المراكز الخمسة الأولى!"
     )
+
+    await message.answer(text)
 
 
 @dp.message(F.text == "👥 دعوة صديق")
