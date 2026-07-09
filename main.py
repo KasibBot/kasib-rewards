@@ -260,6 +260,13 @@ async def create_contest_start(callback: CallbackQuery, state: FSMContext):
     await state.set_state(ContestState.waiting_for_title)
 
 
+@dp.message(ContestState.waiting_for_title)
+async def get_contest_title(message: Message, state: FSMContext):
+    await state.update_data(title=message.text)
+
+    await message.answer("🎁 أرسل الجائزة:")
+    await state.set_state(ContestState.waiting_for_prize)
+    
 @dp.callback_query(lambda c: c.data == "delete_task")
 async def delete_task_menu(callback: CallbackQuery):
     if callback.from_user.id != ADMIN_ID:
