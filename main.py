@@ -28,6 +28,7 @@ dp.include_router(tasks_router)
 
 @dp.message(CommandStart())
 async def start(message: Message):
+
     user_id = message.from_user.id
     username = message.from_user.username
     first_name = message.from_user.first_name
@@ -40,6 +41,36 @@ async def start(message: Message):
             username,
             first_name
         )
+
+    args = message.text.split(maxsplit=1)
+
+    if len(args) > 1:
+
+        try:
+            referrer_id = int(args[1])
+
+            if (
+                referrer_id != user_id
+                and get_referred_by(user_id) is None
+            ):
+
+                set_referred_by(
+                    user_id,
+                    referrer_id
+                )
+
+                add_referral_reward(
+                    referrer_id
+                )
+
+                await bot.send_message(
+                    referrer_id,
+                    "🎉 انضم مستخدم جديد عبر رابط دعوتك.\n"
+                    "⭐ تمت إضافة 10 نقاط إلى رصيدك."
+                )
+
+        except ValueError:
+            pass
 
     await message.answer(
         "💰 مرحبًا بك في Kasib\n\n"
