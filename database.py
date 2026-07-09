@@ -218,3 +218,15 @@ def reject_submission(submission_id):
 
 
     return submission
+def get_leaderboard():
+
+    response = (
+        supabase
+        .table("users")
+        .select("first_name, points")
+        .order("points", desc=True)
+        .limit(5)
+        .execute()
+    )
+
+    return response.data
