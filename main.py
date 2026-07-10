@@ -599,8 +599,6 @@ async def support(message: Message, state: FSMContext):
         "📩 أرسل رسالتك الآن، وسيتم إرسالها إلى فريق الدعم."
     )
     await state.set_state(SupportState.waiting_for_message)
-
-
 @dp.message(SupportState.waiting_for_message)
 async def receive_support_message(message: Message, state: FSMContext):
     username = (
@@ -609,13 +607,25 @@ async def receive_support_message(message: Message, state: FSMContext):
         else "لا يوجد"
     )
 
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="📩 رد",
+                    callback_data=f"reply_{message.from_user.id}"
+                )
+            ]
+        ]
+    )
+
     await bot.send_message(
         SUPPORT_CHAT_ID,
         f"📩 طلب دعم جديد\n\n"
         f"👤 الاسم: {message.from_user.full_name}\n"
         f"🆔 ID: {message.from_user.id}\n"
         f"🔗 المعرف: {username}\n\n"
-        f"💬 الرسالة:\n{message.text}"
+        f"💬 الرسالة:\n{message.text}",
+        reply_markup=keyboard
     )
 
     await message.answer(
