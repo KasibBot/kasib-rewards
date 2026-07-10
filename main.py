@@ -389,9 +389,11 @@ async def run_draw(callback: CallbackQuery):
         "status": "finished"
     }).eq("id", c["id"]).execute()
 
-    supabase.table("users").update({
-        "tickets": 0
-    }).execute()
+
+supabase.table("users") \
+    .update({"tickets": 0}) \
+    .gt("tickets", 0) \
+    .execute()
     
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
