@@ -608,9 +608,12 @@ async def run_web_server():
 
 
 async def main():
-    print("Bot started successfully")
+    print("قبل تشغيل السيرفر")
 
     await run_web_server()
+
+    print("قبل تشغيل البوت")
+
     await dp.start_polling(bot)
 
 
