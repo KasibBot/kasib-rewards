@@ -608,15 +608,15 @@ async def run_web_server():
 
 
 async def main():
-    print("قبل تشغيل السيرفر")
-
     await run_web_server()
-
-    print("قبل تشغيل البوت")
 
     await bot.delete_webhook(drop_pending_updates=True)
 
-    await dp.start_polling(bot)
+    try:
+        await dp.start_polling(bot)
+    except Exception as e:
+        print(f"Polling crashed: {e}")
+        raise
 
 
 if __name__ == "__main__":
