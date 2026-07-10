@@ -91,38 +91,8 @@ admin_keyboard = InlineKeyboardMarkup(
 
 @dp.message(CommandStart())
 async def start(message: Message):
-    user_id = message.from_user.id
-    username = message.from_user.username
-    first_name = message.from_user.first_name
-
-    args = message.text.split()
-
-    referrer_id = None
-    if len(args) > 1:
-        try:
-            referrer_id = int(args[1])
-        except:
-            referrer_id = None
-
-    user = get_user(user_id)
-
-    if not user:
-        add_user(
-            user_id,
-            username or "",
-            first_name or "",
-            referrer_id
-        )
-
-        if referrer_id and referrer_id != user_id:
-            add_points(referrer_id, 10)
-
-    await message.answer(
-        "💰 مرحبًا بك في Kasib\n\n"
-        "اكسب النقاط، شارك في المسابقات، واربح الجوائز!\n\n"
-        "اختر أحد الخيارات من القائمة 👇",
-        reply_markup=main_keyboard
-    )
+    print("وصل أمر /start")
+    await message.answer("البوت يعمل")
 
 @dp.message(Command("admin"))
 async def admin_panel(message: Message):
