@@ -89,14 +89,6 @@ admin_keyboard = InlineKeyboardMarkup(
     ]
 )
 
-
-
-
-
-
-
-
-
 @dp.message(CommandStart())
 async def start(message: Message):
 user_id = message.from_user.id
