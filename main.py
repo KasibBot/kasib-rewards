@@ -373,13 +373,14 @@ for user in users.data:
 
     text = "🎉 الفائزون:\n\n"
 
-    for i, winner in enumerate(winners, start=1):
+         for i, winner in enumerate(winners, start=1):
         name = f"@{winner['username']}" if winner["username"] else str(winner["telegram_id"])
-text += f"{i}- {name}\n"
+
+        text += f"{i}- {name}\n"
 
         await bot.send_message(
-    winner["telegram_id"],
-    "🎉 مبروك! لقد فزت في المسابقة!"
+            winner["telegram_id"],
+            "🎉 مبروك! لقد فزت في المسابقة!"
         )
 
     await callback.message.answer(text)
