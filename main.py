@@ -27,11 +27,15 @@ from aiohttp import web
 from aiogram.fsm.state import State, StatesGroup
 
 ADMIN_ID = 1924476173
+SUPPORT_CHAT_ID = -1004469291192
 
 class AdminTaskState(StatesGroup):
     waiting_for_title = State()
     waiting_for_url = State()
     waiting_for_points = State()
+
+class SupportState(StatesGroup):
+    waiting_for_message = State()
     
 class ContestState(StatesGroup):
     waiting_for_title = State()
@@ -590,13 +594,35 @@ async def rules(message: Message):
 
 
 @dp.message(F.text == "📞 الدعم")
-async def support(message: Message):
+async def support(message: Message, state: FSMContext):
     await message.answer(
-        "📞 الدعم الفني\n\n"
-        "إذا واجهت أي مشكلة أو كان لديك استفسار، تواصل معنا عبر:\n"
-        "@اسم_حساب_الدعم\n\n"
-        "⏰ سيتم الرد عليك في أقرب وقت ممكن."
+        "📩 أرسل رسالتك الآن، وسيتم إرسالها إلى فريق الدعم."
     )
+    await state.set_state(SupportState.waiting_for_message)
+
+
+@dp.message(SupportState.waiting_for_message)
+async def receive_support_message(message: Message, state: FSMContext):
+    username = (
+        f"@{message.from_user.username}"
+        if message.from_user.username
+        else "لا يوجد"
+    )
+
+    await bot.send_message(
+        SUPPORT_CHAT_ID,
+        f"📩 طلب دعم جديد\n\n"
+        f"👤 الاسم: {message.from_user.full_name}\n"
+        f"🆔 ID: {message.from_user.id}\n"
+        f"🔗 المعرف: {username}\n\n"
+        f"💬 الرسالة:\n{message.text}"
+    )
+
+    await message.answer(
+        "✅ تم إرسال رسالتك إلى فريق الدعم، وسيتم الرد عليك في أقرب وقت."
+    )
+
+    await state.clear()
 
 
 async def health(request):
