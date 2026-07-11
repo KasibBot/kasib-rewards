@@ -13,6 +13,9 @@ main_keyboard = ReplyKeyboardMarkup(
             KeyboardButton(text="🎟️ بطاقات السحب")
         ],
         [
+            KeyboardButton(text="🎟️ المشاركة في السحب")
+        ],
+        [
             KeyboardButton(text="🎁 المسابقات"),
             KeyboardButton(text="👥 دعوة صديق")
         ],
