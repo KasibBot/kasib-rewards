@@ -414,6 +414,37 @@ async def my_points(message: Message):
     )
 
 
+@dp.message(F.text == "🎟️ المشاركة في السحب")
+async def join_contest(message: Message, state: FSMContext):
+
+    contest = supabase.table("contests") \
+        .select("*") \
+        .eq("status", "active") \
+        .limit(1) \
+        .execute()
+
+    if not contest.data:
+        await message.answer("❌ لا توجد مسابقة نشطة حالياً.")
+        return
+
+    user = supabase.table("users") \
+        .select("tickets") \
+        .eq("telegram_id", message.from_user.id) \
+        .limit(1) \
+        .execute()
+
+    if not user.data or user.data[0]["tickets"] <= 0:
+        await message.answer("❌ لا تملك أي بطاقات سحب.")
+        return
+
+    tickets = user.data[0]["tickets"]
+
+    await message.answer(
+        f"🎟️ لديك {tickets} بطاقة سحب.\n\n"
+        "✍️ أرسل عدد البطاقات التي تريد استخدامها في هذه المسابقة."
+    )
+
+    await state.set_state(JoinContestState.waiting_for_tickets)
 @dp.message(F.text == "🎟️ بطاقات السحب")
 async def tickets(message: Message):
     user = supabase.table("users") \
@@ -434,6 +465,8 @@ async def tickets(message: Message):
     await message.answer(
         f"🎟️ لديك {tickets} بطاقة سحب."
     )
+
+
 @dp.message(F.text == "🎟️ استبدال النقاط")
 async def exchange_points(message: Message):
     user = supabase.table("users") \
