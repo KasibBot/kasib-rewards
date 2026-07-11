@@ -467,6 +467,69 @@ async def tickets(message: Message):
     )
 
 
+@dp.message(JoinContestState.waiting_for_tickets)
+async def save_contest_entry(message: Message, state: FSMContext):
+
+    if not message.text.isdigit():
+        await message.answer("❌ أرسل رقمًا صحيحًا.")
+        return
+
+    tickets = int(message.text)
+
+    contest = supabase.table("contests") \
+        .select("id") \
+        .eq("status", "active") \
+        .limit(1) \
+        .execute()
+
+    if not contest.data:
+        await message.answer("❌ انتهت المسابقة.")
+        await state.clear()
+        return
+
+    contest_id = contest.data[0]["id"]
+
+    user = supabase.table("users") \
+        .select("tickets, username") \
+        .eq("telegram_id", message.from_user.id) \
+        .limit(1) \
+        .execute()
+
+    user_data = user.data[0]
+
+    if tickets <= 0 or tickets > user_data["tickets"]:
+        await message.answer("❌ عدد البطاقات غير صالح.")
+        return
+
+    existing = supabase.table("contest_entries") \
+        .select("*") \
+        .eq("contest_id", contest_id) \
+        .eq("user_id", message.from_user.id) \
+        .execute()
+
+    if existing.data:
+        supabase.table("contest_entries").update({
+            "tickets_used": existing.data[0]["tickets_used"] + tickets
+        }).eq("id", existing.data[0]["id"]).execute()
+    else:
+        supabase.table("contest_entries").insert({
+            "contest_id": contest_id,
+            "user_id": message.from_user.id,
+            "username": message.from_user.username,
+            "tickets_used": tickets
+        }).execute()
+
+    supabase.table("users").update({
+        "tickets": user_data["tickets"] - tickets
+    }).eq("telegram_id", message.from_user.id).execute()
+
+    await message.answer(
+        f"✅ تمت مشاركتك في السحب باستخدام {tickets} بطاقة. 🍀"
+    )
+
+    await state.clear()
+
+
 @dp.message(F.text == "🎟️ استبدال النقاط")
 async def exchange_points(message: Message):
     user = supabase.table("users") \
