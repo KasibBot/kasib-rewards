@@ -28,6 +28,7 @@ from aiogram.fsm.state import State, StatesGroup
 
 ADMIN_ID = 1924476173
 SUPPORT_CHAT_ID = -1004469291192
+RESULTS_GROUP_ID = -5353973031
 
 class AdminTaskState(StatesGroup):
     waiting_for_title = State()
