@@ -369,7 +369,7 @@ async def run_draw(callback: CallbackQuery):
 
     winners_count = c["winners_count"]
 
-    if len(pool) < winners_count:
+    if winners_count > len(pool):
         winners_count = len(pool)
 
     winners = []
@@ -385,29 +385,33 @@ async def run_draw(callback: CallbackQuery):
     text = "🎉 الفائزون:\n\n"
 
     for i, winner in enumerate(winners, start=1):
-        name = f"@{winner['username']}" if winner["username"] else str(winner["telegram_id"])
+        name = (
+            f"@{winner['username']}"
+            if winner["username"]
+            else str(winner["telegram_id"])
+        )
 
         text += f"{i}- {name}\n"
 
-        await bot.send_message(
-            winner["telegram_id"],
-            "🎉 مبروك! لقد فزت في المسابقة!"
-        )
-
-        group_name = name
+        try:
+            await bot.send_message(
+                winner["telegram_id"],
+                "🎉 مبروك! لقد فزت في المسابقة!"
+            )
+        except Exception as e:
+            print(f"خطأ إرسال للفائز: {e}")
 
         try:
             await bot.send_message(
                 RESULTS_GROUP_ID,
                 f"""🏆 تم إعلان نتيجة المسابقة
 
-🎉 الفائز رقم {i}: {group_name}
+🎉 الفائز رقم {i}: {name}
 🎁 الجائزة: {c['prize']}
 
 مبروك للفائز! 🎊"""
             )
-            print("تم إرسال الرسالة إلى المجموعة بنجاح")
-                except Exception as e:
+        except Exception as e:
             print(f"خطأ إرسال للمجموعة: {e}")
 
     await callback.message.answer(text)
