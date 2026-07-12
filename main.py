@@ -414,20 +414,20 @@ async def run_draw(callback: CallbackQuery):
         except Exception as e:
             print(f"خطأ إرسال للمجموعة: {e}")
 
-    await callback.message.answer(text)
+        await callback.message.answer(text)
+
+    print("Contest ID:", c["id"])
 
     result = supabase.table("contests").update({
         "status": "finished"
     }).eq("id", c["id"]).execute()
 
-    print("Contest ID:", c["id"])
+    print("Update result:", result)
 
-result = supabase.table("contests") \
-    .update({"status": "finished"}) \
-    .eq("id", c["id"]) \
-    .execute()
-
-print("Update result:", result)
+    supabase.table("users") \
+        .update({"tickets": 0}) \
+        .gt("tickets", 0) \
+        .execute()
     
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
