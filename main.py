@@ -412,7 +412,8 @@ async def run_draw(callback: CallbackQuery):
 
                 await callback.message.answer(text)
 
-    result = supabase.table("contests").update({
+    result =
+supabase.table("contests").update({
         "status": "finished"
     }).eq("id", c["id"]).execute()
 
