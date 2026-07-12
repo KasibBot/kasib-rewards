@@ -410,13 +410,13 @@ async def run_draw(callback: CallbackQuery):
         except Exception as e:
             print(f"خطأ إرسال للمجموعة: {e}")
 
-    await callback.message.answer(text)
+                await callback.message.answer(text)
 
     result = supabase.table("contests").update({
-    "status": "finished"
-}).eq("id", c["id"]).execute()
+        "status": "finished"
+    }).eq("id", c["id"]).execute()
 
-print(result)
+    print(result)
 
     supabase.table("users") \
         .update({"tickets": 0}) \
