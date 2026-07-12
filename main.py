@@ -393,7 +393,7 @@ async def run_draw(callback: CallbackQuery):
             "🎉 مبروك! لقد فزت في المسابقة!"
         )
  
-)@dp.callback_query(lambda c: c.data == "run_draw")
+@dp.callback_query(lambda c: c.data == "run_draw")
 async def run_draw(callback: CallbackQuery):
     if callback.from_user.id != ADMIN_ID:
         return
