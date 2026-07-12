@@ -346,7 +346,7 @@ async def run_draw(callback: CallbackQuery):
 
     c = contest.data[0]
 
-        entries = supabase.table("contest_entries") \
+    entries = supabase.table("contest_entries") \
         .select("*") \
         .eq("contest_id", c["id"]) \
         .execute()
