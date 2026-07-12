@@ -447,7 +447,7 @@ async def run_draw(callback: CallbackQuery):
 
     text = "🎉 الفائزون:\n\n"
 
-    for i, winner in enumerate(winners, start=1):
+        for i, winner in enumerate(winners, start=1):
         name = f"@{winner['username']}" if winner["username"] else str(winner["telegram_id"])
 
         text += f"{i}- {name}\n"
@@ -455,29 +455,30 @@ async def run_draw(callback: CallbackQuery):
         await bot.send_message(
             winner["telegram_id"],
             "🎉 مبروك! لقد فزت في المسابقة!"
-        )  
-     group_name = f"@{winner['username']}" if winner["username"] else str(winner["telegram_id"])
+        )
 
-await bot.send_message(
-    RESULTS_GROUP_ID,
-    f"""🏆 تم إعلان نتيجة المسابقة
+        group_name = f"@{winner['username']}" if winner["username"] else str(winner["telegram_id"])
+
+        await bot.send_message(
+            RESULTS_GROUP_ID,
+            f"""🏆 تم إعلان نتيجة المسابقة
 
 🎉 الفائز رقم {i}: {group_name}
 🎁 الجائزة: {c['prize']}
 
 مبروك للفائز! 🎊"""
-    
+        )
+
     await callback.message.answer(text)
 
     supabase.table("contests").update({
         "status": "finished"
     }).eq("id", c["id"]).execute()
 
-
-supabase.table("users") \
-    .update({"tickets": 0}) \
-    .gt("tickets", 0) \
-    .execute()
+    supabase.table("users") \
+        .update({"tickets": 0}) \
+        .gt("tickets", 0) \
+        .execute()
     
 @dp.message(F.text == "⭐ نقاطي")
 async def my_points(message: Message):
