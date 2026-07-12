@@ -392,16 +392,7 @@ async def run_draw(callback: CallbackQuery):
             winner["telegram_id"],
             "🎉 مبروك! لقد فزت في المسابقة!"
         )
-group_name = f"@{winner['username']}" if winner["username"] else str(winner["telegram_id"])
-
-await bot.send_message(
-    RESULTS_GROUP_ID,
-    f"""🏆 تم إعلان نتيجة المسابقة
-
-🎉 الفائز رقم {i}: {group_name}
-🎁 الجائزة: {c['prize']}
-
-مبروك للفائز! 🎊"""
+ 
 )@dp.callback_query(lambda c: c.data == "run_draw")
 async def run_draw(callback: CallbackQuery):
     if callback.from_user.id != ADMIN_ID:
@@ -466,6 +457,17 @@ async def run_draw(callback: CallbackQuery):
             "🎉 مبروك! لقد فزت في المسابقة!"
         )
         
+     group_name = f"@{winner['username']}" if winner["username"] else str(winner["telegram_id"])
+
+await bot.send_message(
+    RESULTS_GROUP_ID,
+    f"""🏆 تم إعلان نتيجة المسابقة
+
+🎉 الفائز رقم {i}: {group_name}
+🎁 الجائزة: {c['prize']}
+
+مبروك للفائز! 🎊"""
+    
     await callback.message.answer(text)
 
     supabase.table("contests").update({
